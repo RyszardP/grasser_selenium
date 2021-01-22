@@ -1,5 +1,7 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 public class AuthPage {
 
@@ -9,22 +11,59 @@ public class AuthPage {
         this.webDriver = webDriver;
     }
 
-    private By loginField = By.xpath("/html/body/div[3]/div[2]/div[2]/div/div/form/div[1]/div[2]/input");
-    private By passwordField = By.xpath("/html/body/div[3]/div[2]/div[2]/div/div/form/div[2]/div[2]/input");
-    private By registerLink = By.xpath("/html/body/div[3]/div[2]/div[2]/div/div/noindex[2]/div/a/b");
+    @FindBy(xpath = "/html/body/div[3]/div[2]/div[2]/div/div/form/div[1]/div[2]/input")
+    private WebElement loginField;
+
+    @FindBy(xpath = "/html/body/div[3]/div[2]/div[2]/div/div/form/div[2]/div[2]/input")
+    private WebElement passwordField;
+
+    @FindBy(xpath = "/html/body/div[3]/div[2]/div[2]/div/div/noindex[2]/div/a/b")
+    private WebElement registerLink;
+
+    @FindBy(xpath = "//*[@id='USER_REMEMBER']")
+    private WebElement rememberMeCheckBox;
+
+    @FindBy(xpath = "/html/body/div[3]/div[2]/div[2]/div/div/form/div[4]/input")
+    private WebElement buttonEnter;
+
+    @FindBy(xpath = "/html/body/div[3]/div[2]/div[1]/h1")
+    private WebElement heading;
+
+    @FindBy(xpath = "/html/body/div[3]/div[2]/div[2]/div/div/div")
+    private WebElement error;
 
     public RegisterPage clickRegister(){
-        webDriver.findElement(registerLink).click();
+        registerLink.click();
         return new RegisterPage(webDriver);
     }
 
     public AuthPage typeLogin(String login){
-        webDriver.findElement(loginField).sendKeys(login);
+        loginField.sendKeys(login);
         return this;
     }
 
     public AuthPage typePassword(String password){
-        webDriver.findElement(passwordField).sendKeys(password);
+        passwordField.sendKeys(password);
         return this;
+    }
+
+    public AuthPage clickCheckBox(){
+        rememberMeCheckBox.click();
+        return this;
+    }
+
+    public AuthPage authWithInvalidCreds(String login, String password){
+        this.typeLogin(login);
+        this.typePassword(password);
+        buttonEnter.click();
+        return new AuthPage(webDriver);
+    }
+
+    public String getHeadingText(){
+        return heading.getText();
+    }
+
+    public String getErrorText(){
+        return error.getText();
     }
 }
